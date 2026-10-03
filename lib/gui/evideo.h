@@ -10,6 +10,7 @@ class eVideoWidget: public eLabel
 	eRect m_user_rect;
 	int m_decoder;
 	bool m_overscan;
+	ePtr<eTimer> m_showTimer;
 	static ePtr<eTimer> fullsizeTimer;
 	static int pendingFullsize;
 	static int posFullsizeLeft;
@@ -29,6 +30,8 @@ public:
 protected:
 	int event(int event, void *data=0, void *data2=0);
 	void updatePosition(int disable = 0);
+	void scheduleUpdatePosition();
+	void showTimeout();
 	static void writeProc(const std::string &filename, int value);
 	static void setPosition(int index, int left, int top, int width, int height);
 };

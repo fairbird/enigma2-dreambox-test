@@ -22,6 +22,8 @@ eVideoWidget::eVideoWidget(eWidget *parent)
 		fullsizeTimer = eTimer::create(eApp);
 		fullsizeTimer->timeout.connect(sigc::bind(sigc::ptr_fun(&eVideoWidget::setFullsize), false, false));
 	}
+	m_showTimer = eTimer::create(eApp);
+	m_showTimer->timeout.connect(sigc::mem_fun(*this, &eVideoWidget::showTimeout));
 	parent->setPositionNotifyChild(1);
 }
 
@@ -32,14 +34,14 @@ int eVideoWidget::event(int event, void *data, void *data2)
 	case evtChangedPosition:
 	case evtParentChangedPosition:
 		m_state &= ~1;
-		updatePosition(!isVisible());
+		scheduleUpdatePosition();
 		break;
 	case evtChangedSize:
 		m_state |= 2;
-		updatePosition(!isVisible());
+		scheduleUpdatePosition();
 		break;
 	case evtParentVisibilityChanged:
-		updatePosition(!isVisible());
+		scheduleUpdatePosition();
 		break;
 	}
 	return eLabel::event(event, data, data2);
@@ -47,7 +49,25 @@ int eVideoWidget::event(int event, void *data, void *data2)
 
 eVideoWidget::~eVideoWidget()
 {
+	m_showTimer->stop();
 	updatePosition(1);
+}
+
+void eVideoWidget::scheduleUpdatePosition()
+{
+	if (isVisible() && !(m_state & 8))
+	{
+		if (!m_showTimer->isActive())
+			m_showTimer->start(80, true);
+		return;
+	}
+	m_showTimer->stop();
+	updatePosition(!isVisible());
+}
+
+void eVideoWidget::showTimeout()
+{
+	updatePosition(!isVisible());
 }
 
 void eVideoWidget::setFBSize(eSize size)
