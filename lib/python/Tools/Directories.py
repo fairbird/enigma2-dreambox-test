@@ -12,7 +12,7 @@ from tempfile import mkstemp
 from datetime import datetime
 from xml.etree.ElementTree import Element, ParseError, fromstring, parse
 
-from enigma import eEnv, getDesktop, eGetEnigmaDebugLvl, getEGLVersionString, getGLESVersionString
+from enigma import eEnv, getDesktop, eGetEnigmaDebugLvl
 
 DEFAULT_MODULE_NAME = __name__.split(".")[-1]
 
@@ -97,18 +97,6 @@ scopeGUISkin = defaultPaths[SCOPE_GUISKIN][0]
 scopeLCDSkin = defaultPaths[SCOPE_LCDSKIN][0]
 scopeFonts = defaultPaths[SCOPE_FONTS][0]
 scopePlugins = defaultPaths[SCOPE_PLUGINS][0]
-
-
-def eglStr():
-	egl = getEGLVersionString().split(' ', 1)[0]
-	if egl:
-		return f"EGL {egl}"
-	return ""
-
-def glesStr():
-	gles = getGLESVersionString()
-	if gles:
-		return gles.split(' "', 1)[0]
 
 
 def InitDefaultPaths():
